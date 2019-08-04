@@ -37,6 +37,7 @@ namespace TrigEncodingCompression
                 throw new ArgumentNullException("ErrorFunction");
             int currEpochs = 0;
             double currentError, previousError = double.MaxValue;
+            bool wasLastZero = false;
             List<float> currentParameters = new List<float>(initialParameters);
             List<double> parameterErrors = new List<double>();
             for (int i = 0; i < initialParameters.Count; i++)
@@ -44,6 +45,7 @@ namespace TrigEncodingCompression
             currentError = ErrorFunction(dataBlock, currentParameters, Order, predictionFunction);
             while (currEpochs < maxEpochs)
             {
+                Console.WriteLine("On Epoch " + currEpochs + ", error was: " + currentError);
                 double maxErrorChange = 0;
                 for (int i = 0; i < currentParameters.Count; i++)
                 {
@@ -61,6 +63,13 @@ namespace TrigEncodingCompression
                 {
                     for (int i = 0; i < ParameterMovementDirections.Count; i++)
                         ParameterMovementDirections[i] = !ParameterMovementDirections[i];
+                    if (wasLastZero)
+                    {
+                        LearningRate /= 2;
+                        Console.WriteLine("Learning rate is now " + LearningRate);
+                    }
+                    wasLastZero = true;
+                    currEpochs++;
                     continue;
                 }
                 for (int i = 0; i < currentParameters.Count; i++)
@@ -79,6 +88,8 @@ namespace TrigEncodingCompression
                 else if (previousError - currentError < minimumErrorChange)
                     break;
                 currEpochs++;
+                if (wasLastZero)
+                    wasLastZero = false;
             }
             for (int i = 0; i < initialParameters.Count; i++)
             {

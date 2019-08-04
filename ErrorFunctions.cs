@@ -26,7 +26,7 @@ namespace TrigEncodingCompression
                     currentData[j - 1] = currentData[j];
                 currentData[order - 1] = predictedValue;
             }
-            return error;
+            return Math.Sqrt(error);
         }
     }
 }

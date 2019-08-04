@@ -42,7 +42,7 @@ namespace TrigEncodingCompression
             byte[] dataIn = ReadBlockFromFile(1024, streamIn);
             CurveFitter fitter = new CurveFitter(DEFAULT_ORDER);
             fitter.ErrorFunction = ErrorFunctions.SquaredErrors;
-            fitter.FitData(dataIn, parameters, 1E-8, PredictorFunctions.PureSinePredictor, 500);
+            fitter.FitData(dataIn, parameters, 1E-8, PredictorFunctions.PureSinePredictor, 100);
             Console.In.Read();
         }
     }
