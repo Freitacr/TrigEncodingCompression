@@ -96,5 +96,20 @@ namespace TrigEncodingCompression
                 initialParameters[i] = currentParameters[i];
             }
         }
+
+        public void DecorrelateData(byte[] dataIn, List<float> parameters, Func<List<byte>, List<float>, byte> predictionFunction)
+        {
+            List<byte> currentData = new List<byte>();
+            for (int i = 0; i < parameters.Count; i++)
+                currentData.Add(dataIn[i]);
+            for (int i = parameters.Count; i < dataIn.Length; i++)
+            {
+                byte predictedValue = predictionFunction(currentData, parameters);
+                dataIn[i] = (byte)(dataIn[i] - predictedValue);
+                for (int j = 1; j < parameters.Count; j++)
+                    currentData[j - 1] = currentData[j];
+                currentData[currentData.Count - 1] = predictedValue;
+            }
+        }
     }
 }
